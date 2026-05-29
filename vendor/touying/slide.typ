@@ -727,6 +727,11 @@
           last-title = none
         }
       }
+      // Drop an empty lower-level slide title before entering a new section.
+      if child.depth <= slide-level and title != none and slide == () {
+        title = none
+        last-title = none
+      }
       let child-body = if child.body != [] { child.body } else { none }
       if child.depth == 1 {
         if slide-level >= 1 {
