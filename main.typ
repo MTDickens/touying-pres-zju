@@ -12,7 +12,7 @@
   date: "2026-06-05",
   institution: [计算机科学与技术学院],
   logo: image("./imgs/zju_logo_side.svg", width: 40%),
-  head-logo: image("./imgs/zju_logo_side.svg",width: 15%),
+  head-logo: image("./imgs/zju_logo_side.svg",width: 13%),
   github: ""
 )
 #let s = (s.methods.colors)(
