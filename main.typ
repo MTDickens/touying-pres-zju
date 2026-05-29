@@ -5,10 +5,12 @@
 #let s = (s.methods.info)(
   self: s,
   title: [Typst template for Zhejiang University],
-  subtitle: [Continuously Improving...],
-  author: [MTDickens],
-  date: datetime.today(),
-  institution: [School of Computer Science and Technology, ZJU],
+  // subtitle: [Continuously Improving...],
+  author: [简一畅],
+  advisor: [丁尧相],
+  // date: datetime.today(),
+  date: "2026-06-05",
+  institution: [计算机科学与技术学院],
   logo: image("./imgs/zju_logo_side.svg", width: 40%),
   head-logo: image("./imgs/zju_logo_side.svg",width: 15%),
   github: ""
@@ -397,4 +399,3 @@ tip(title: "Best tip ever")[Check out this cool package]
   敬请指正！
 ]
 ]
-

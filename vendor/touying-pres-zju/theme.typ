@@ -171,8 +171,12 @@
       column-gutter: 1em,
       row-gutter: 1em,
       
-      ..info.authors.map(author => text(fill: black, author)),
+      ..info.authors.map(author => text(fill: black, "答辩人：" + author)),
     )
+    if "advisor" in info and info.advisor != none {
+      parbreak()
+      text(fill: black, "导师：" + info.advisor + "教授")
+    }
     v(0.5em)
     // institution
     if info.institution != none {
