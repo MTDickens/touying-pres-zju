@@ -1,0 +1,19 @@
+# macOS
+.DS_Store
+
+# Typst/Touying build artifacts
+*.pdf
+*.synctex.gz
+*.pdfpc
+*.pptx
+
+# Local editor/cache files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Local tool/version manager state
+.typst-bin/
+.mise.local.toml

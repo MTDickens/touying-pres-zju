@@ -1,0 +1,16 @@
+[package]
+name = "touying-pres-zju"
+version = "0.2.0"
+entrypoint = "theme.typ"
+authors = ["MTDickens<https://github.com/MTDickens>"]
+license = "MIT"
+description = "Touying slide theme for Zhejiang University."
+repository = "https://github.com/MTDickens/touying-pres-zju"
+keywords = ["touying", "slide", "presentation", "zju", "zhejiang-university"]
+categories = ["presentation"]
+exclude = ["main.pdf"]
+
+[template]
+path = "content/example"
+entrypoint = "main.typ"
+thumbnail = "image.png"
