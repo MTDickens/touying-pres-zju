@@ -4,7 +4,7 @@
 #let s = (s.methods.numbering)(self: s, section: "1.", "1.1")
 #let s = (s.methods.info)(
   self: s,
-  title: [Typst template for Zhejiang University],
+  title: [基于符号化想象空间的大模型"以图思考"推理方法研究],
   // subtitle: [Continuously Improving...],
   author: [简一畅],
   advisor: [丁尧相],
@@ -394,8 +394,8 @@ tip(title: "Best tip ever")[Check out this cool package]
   #align(center + horizon)[
   #set text(size: 3em, weight: "bold", s.colors.primary)
 
-  THANKS FOR ALL
+  谢谢！
 
-  敬请指正！
+  THANKS!
 ]
 ]
