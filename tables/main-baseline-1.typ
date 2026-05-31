@@ -9,7 +9,7 @@
       table.cell(rowspan: 2)[*环境*],
       table.cell(rowspan: 2)[*模型*],
       table.cell(colspan: 2)[*VLM 直接输出*],
-      table.cell(colspan: 2)[*原生 TWI*],
+      table.cell(colspan: 2)[*原生"以图思考"*],
       table.cell(colspan: 2)[*PI-TWI*],
       table.hline(start: 2, stroke: 0.4pt),
       [*接地准确率*], [*规划准确率*], [*接地准确率*], [*规划准确率*], [*接地准确率*], [*规划准确率*],

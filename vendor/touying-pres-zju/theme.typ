@@ -433,7 +433,7 @@
     // )
     grid(
       // columns: footer-columns,
-      columns:(30%,65%,0%,5%),
+      columns:(28%,68%,0%,4%),
       rows: (2em, auto),
       // cell(fill: self.colors.primary, utils.call-or-display(self, footer-a)),
       // cell(fill: self.colors.primary-dark, utils.call-or-display(self, footer-b)),
