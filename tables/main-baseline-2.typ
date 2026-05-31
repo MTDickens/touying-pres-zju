@@ -22,9 +22,9 @@
       table.hline(stroke: 0.4pt),
 
       table.cell(rowspan: 3)[#smallcaps[Crafter]],
-      [GPT-5.4], [46.39], [#text(red)[0.00]], [44.28], [#text(red)[0.00]], [*100.00*], [*100.00*],
-      [Gemini 3.1 Pro], [26.71], [#text(red)[0.00]], [48.78], [#text(red)[41.67]], [*100.00*], [*100.00*],
-      [#text(0.7em)[Qwen3 VL 235B A22B]], [0.00], [#text(red)[0.00]], [22.08], [#text(red)[0.00]], [*100.00*], [*100.00*],
+      [GPT-5.4], [46.39], [0.00], [44.28], [0.00], [*100.00*], [*100.00*],
+      [Gemini 3.1 Pro], [26.71], [0.00], [48.78], [41.67], [*100.00*], [*100.00*],
+      [#text(0.7em)[Qwen3 VL 235B A22B]], [0.00], [0.00], [22.08], [0.00], [*100.00*], [*100.00*],
       table.hline(stroke: 0.4pt),
 
       table.cell(rowspan: 3)[#smallcaps[CubeBench]],
