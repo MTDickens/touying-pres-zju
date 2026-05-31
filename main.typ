@@ -96,10 +96,10 @@
 == 面向知识获取的归纳学习
 
 - #sym.alpha ILP: 传统可微归纳逻辑编程方法
-- ShapeLib, FactoredScenes, PoE-World: 利用 LLM 生成符号提议 (tbd: 是 LLM 还是 VLM？)
+- ShapeLib, FactoredScenes, PoE-World: 利用 VLM 生成符号提议
   - PoE-World: 将程序视为组合式专家，用于表示符号化想象空间中的转移规则
 
-我们的工作利用 VLM *同时进行感知和生成符号模式提议*。同时，为了抑制错误的归纳结果，受混合专家模型 (Mixture-of-Experts, MoE) 和掩码自编码器 (Masked Autoencoder, MAE)的启发，我们的工作利用随机遮蔽的历史轨迹作为训练数据，借助基于梯度的优化方式调整不同专家的权重，降低错误或者无关专家的权重。
+我们的工作利用 VLM *同时进行感知和生成符号模式提议*。同时，为了抑制错误的归纳结果，受混合专家模型 (Mixture-of-Experts, MoE) 和掩码自编码器 (Masked Autoencoder, MAE)的启发，我们的工作*利用随机遮蔽的历史轨迹作为训练数据*，借助基于梯度的优化方式*调整不同专家的权重*，降低错误或者无关专家的权重。
 
 = 第三章：方法
 
