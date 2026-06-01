@@ -1,8 +1,12 @@
 # macOS
 .DS_Store
 
+# Miscellaneous
+3210106054-王信博-自适应调度智能体及基准测试构建.pdf
+
 # Typst/Touying build artifacts
-*.pdf
+main.pdf
+
 *.synctex.gz
 *.pdfpc
 *.pptx
