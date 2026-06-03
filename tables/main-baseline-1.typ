@@ -1,9 +1,9 @@
 #figure(
-  text(size: 9pt)[
+  text(size: 12pt)[
     #table(
       columns: (auto, 1.7fr) + (1fr,) * 6,
       align: (center, left) + (center,) * 6,
-      inset: (x: 1.5pt, y: 1.3pt),
+      inset: (x: 1.5pt, y: 4.3pt),
       stroke: none,
       table.hline(stroke: 0.6pt),
       table.cell(rowspan: 2)[*环境*],

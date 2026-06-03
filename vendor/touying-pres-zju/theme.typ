@@ -175,7 +175,8 @@
     )
     if "advisor" in info and info.advisor != none {
       parbreak()
-      text(fill: black, "导师：" + info.advisor + "教授")
+      // text(fill: black, "导师：" + info.advisor + "教授")
+      text(fill: black, "指导老师：" + info.advisor)
     }
     v(0.5em)
     // institution

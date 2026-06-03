@@ -39,85 +39,126 @@
 
 #outline-slide()
 
-= 第一章：绪论
+= 第一章：研究背景和目标
+
+// 第一页：感知瓶颈；第二页：以图思考（大部分工作不是规划任务；但是在一般推理任务上是缓解视觉瓶颈的有效方式；引出本文研究目标 [page 3]：构建有效的以图思考 in planning，提升效率）
 
 == 研究背景：视觉规划中的感知瓶颈
 
-#slide(composer: (1.2fr, 1.38fr))[
-  - 虽然#text(green)[VLM 在视觉规划任务中，展示出巨大潜力]；但是，#text(red)[当前 VLM 在以原始视觉输入为基础的规划领域仍会遇到困难。即，尤其是在复杂任务中，VLM 存在严重的视觉感知瓶颈。]
-  - 虽然#text(green)["以图思考"这一新型范式，一定程度上缓解了上述的视觉感知瓶颈]；但是，#text(red)[即使当前 VLM 已经接受了较充分的通用"以图思考"能力训练，它们在规划领域中的感知障碍仍然存在]
+// 先说现有工作（静明、博远）已经论证
+
+// 说visual planning有perceptual bottleneck
+
+#slide(composer: (0.5fr, 1.0fr))[
+  - VLM 在视觉规划任务中，展示出巨大潜力
+  - 当前 VLM 在以原始视觉输入为基础的规划领域仍会遇到困难
+    - 即，尤其是在复杂任务中，VLM 存在严重的视觉感知瓶颈。
 ][
-  #include "tables/main-baseline-1.typ"
+  #figure(
+    image("figure/autonomous_imagination_teaser_lower.pdf", width: 90%),
+    caption: [Autonomous Imagination, TMLR'25],
+  )
+  #figure(
+    image("figure/scene_diver_robot_qual.pdf", width: 90%),
+    caption: [SceneDiver, ICML'26],
+  )
+]
+== 研究背景："以图思考"范式的局限性
+
+// 说现有的twi方法大多数是在reasoning而非planning任务上，但是少数已经在planning任务上初步论证了有效性，但是目前仍然有效率问题。
+
+// 针对此问题，*"以图思考"这一新型范式*，一定程度上缓解了上述的视觉感知瓶颈；但是，即使当前 VLM 已经接受了较充分的通用"以图思考"能力训练，它们在规划领域中的感知障碍仍然存在。
+
+#slide(composer: (0.7fr, 1.0fr))[
+  针对此问题，*"以图思考"这一新型范式*，一定程度上缓解了上述的视觉感知瓶颈。
+
+  // 同时，以往关于"以图思考"的工作，大部分集中于图像推理任务。少数已经在规划任务上初步论证了有效性，但是。 // fix this
+
+  但是，即使当前 VLM 已经接受了较充分的通用"以图思考"能力训练，它们在规划领域中的感知障碍仍然存在。
+][
+  #figure(
+    image("figure/twi_teasers/v_star.pdf"),
+    caption: [V-Star, CVPR'24],
+  )
+
+  // tbd: Add OpenAI TWI teaser
+]
+
+== 相关工作
+
+#slide()[
+  #text(0.9em)[
+    === 基于 VLM 的规划
+
+    - PaLM-E: 初步将视觉观测和语言指令整合起来，以支持序列机器人操作中的高层规划
+    - ReplanVLM: 引入闭环视觉反馈，从而能够检测执行失败并相应修正规划
+    - Reflective Planning: 通过想象未来世界状态这一方式，改进长程操作规划
+
+    === "以图思考"
+
+    - V-Star, etc: 调用视觉裁剪工具动态获取证据
+    - ViperGPT, etc: 使用视觉草稿纸
+    - MVoT, etc: 直接在视觉模态中模拟未来状态
+
+    === 面向知识获取的归纳学习
+
+    - #sym.alpha ILP: 传统可微归纳逻辑编程方法
+    - ShapeLib, FactoredScenes, PoE-World: 利用 VLM 生成符号提议
+      - PoE-World: 将程序视为组合式专家，用于表示符号化想象空间中的转移规则
+  ]
 ]
 
 == 研究目标
 
-#slide(composer: (1.2fr, 1.38fr))[
-  #text(0.8em)[
-    本工作的定位是一个初步的概念验证研究，旨在验证以下观点：
+本工作的定位是一个初步的概念验证研究，旨在验证以下观点：
+1. 将面向规划的"以图思考"*形式化为逐步构建并反思精确内部符号化想象空间的工具*，可以使 VLM 有效突破规划中的感知瓶颈
+2. *视觉模式*可以作为可复用且可组合的工具，显著降低构建内部符号化想象空间的成本
+3. 关键视觉模式可以由 VLM 基于*在线归纳学习框架自主构建*
 
-    1. 将面向规划的"以图思考"形式化为逐步构建并反思精确内部符号化想象空间的工具，可以使 VLM 有效突破规划中的感知瓶颈
-    2. 视觉模式可以作为可复用且可组合的工具，显著降低构建内部符号化想象空间的成本
-    3. 关键视觉模式可以由 VLM 基于在线归纳学习框架自主构建
-
-    本工作将上述方法组织为 #text(green)[模式归纳"以图思考"]（Pattern-Induced Thinking with Images, PI-TWI），并在三个具有挑战性的视觉规划任务 #smallcaps("FrozenLake")、#smallcaps("Crafter") 和 #smallcaps("CubeBench") 上进行评估。
-  ]][
-  #include "tables/main-baseline-1.typ"
-]
-
-= 第二章：相关工作及研究定位
-
-== 基于 VLM 的规划
-
-- PaLM-E: 初步将视觉观测和语言指令整合起来，以支持序列机器人操作中的高层规划
-- ReplanVLM: 引入闭环视觉反馈，从而能够检测执行失败并相应修正规划
-- Reflective Planning: 通过想象未来世界状态这一方式，改进长程操作规划
-
-先前工作大多#text(gray)[同时研究感知和规划]。而本工作基于*真实规划器已知*的前提，主要研究规划任务中的*感知问题*。
-
-== "以图思考" (TWI)
-
-- V-Star, etc: 调用视觉裁剪工具动态获取证据
-- ViperGPT, etc: 使用视觉草稿纸
-- MVoT, etc: 直接在视觉模态中模拟未来状态
-
-本工作建立在"以图思考"这一视角之上，但是主要关注"以图思考"在规划问题上的应用（即面向规划的"以图思考"）。
-
-同时，与先前的面向规划"以图思考"不同，本工作将*此过程形式化为面向规划器充分性的符号化想象空间构建过程*。即，算法必须决定图片的哪些部分与规划相关，以及判断当前符号化想象空间是否已经足以让真实规划器进行规划。
-
-== 面向知识获取的归纳学习
-
-- #sym.alpha ILP: 传统可微归纳逻辑编程方法
-- ShapeLib, FactoredScenes, PoE-World: 利用 VLM 生成符号提议
-  - PoE-World: 将程序视为组合式专家，用于表示符号化想象空间中的转移规则
-
-本工作利用 VLM *同时进行感知和生成符号模式提议*。同时，为了抑制错误的归纳结果，受混合专家模型 (Mixture-of-Experts, MoE) 和掩码自编码器 (Masked Autoencoder, MAE)的启发，本工作*利用随机遮蔽的历史样例作构造训练数据*，借助基于梯度的优化方式*调整不同专家的权重*，降低错误或者无关专家的权重。
+本工作将上述方法组织为*模式归纳"以图思考"*（Pattern-Induced Thinking with Images, PI-TWI），并在三个视觉规划任务 #smallcaps("FrozenLake")、#smallcaps("Crafter") 和 #smallcaps("CubeBench") 上进行评估。
 
 = 第三章：方法
 
-== PI-TWI 方法概览
-#slide(composer: (1.2fr, 1.38fr))[
-  #text(0.8em)[
-    1. 为突破 VLMs 在视觉规划中的感知限制，本工作将"以图思考"定义为一种从视觉证据中构建"规划充分"的符号化想象空间的方法
-    2. 为降低符号化想象空间构建成本，本工作引入一种新的"以图思考"策略——模式推断，从而使 VLMs 能够在规划任务中主动识别已知视觉模式，并直接推断局部符号化想象空间结构
-    3. 为通过学习获得这些可组合且可复用的模式，本工作提出模式归纳。这是一种从经验中在线构建模式库的归纳学习方法
-  ]
-][
-  #figure(
-    image("./figure/pipeline_cn.pdf", width: 110%),
-    caption: [#smallcaps("PI-TWI") 方法概览 (以 #smallcaps("Crafter") 为例)],
-  )
-]
+// 加上动画（四页 ppt）
 
+== PI-TWI 方法概览
+1. 为突破 VLMs 在视觉规划中的感知限制，本工作将"以图思考"定义为一种*从视觉证据中构建"规划充分"的符号化想象空间的方法*
+2. 为降低符号化想象空间构建成本，本工作引入一种新的"以图思考"策略——*模式推断*，从而使 VLMs 能够在规划任务中主动识别已知视觉模式，并直接推断局部符号化想象空间结构
+3. 为通过学习获得这些可组合且可复用的模式，本工作提出*模式归纳*。这是一种从经验中在线构建模式库的归纳学习方法
 
 == 将"以图思考"形式化为规划充分的符号化想象空间构建
+// Page 1
 
-#slide(composer: (1.2fr, 1.38fr))[
-  #text(0.7em)[
+#slide()[
+  #text(0.69em)[
+    === 动机
+    - VLM 存在感知瓶颈，无法一次性准确感知整张复杂的图片。
+    - 构建初始为空的符号化想象空间。为了尽可能降低单次感知难度，每次只让 VLM 接地一个可单独检查的最小单元
+
+    === 形式化
     - *视觉变量*是可单独检查的最小单元
-      - 如：右图 #smallcaps("Crafter") 环境的一个网格单元
+      - 如：下图 #smallcaps("Crafter") 环境的一个网格单元
     - 一次感知操作中，*揭示算子*首先剪裁一个视觉变量对应的图像区域，然后通过 VLM 将该区域接地为符号事实
-      - 如：原本未知的红框，在这里被揭示算子接地成了"石块"这一符号事实
+    // - 如：原本未知的红框，在这里被揭示算子接地成了"石块"这一符号事实
+    #figure(
+      image("./figure/motivation.png", width: 60%),
+      // caption: [#smallcaps("Crafter") 中模式推断与模式归纳过程的定性示意],
+    )
+  ]
+]
+
+== 将"以图思考"形式化为规划充分的符号化想象空间构建
+// Page 2
+
+#slide(composer: (1.2fr, 1.9fr))[
+  #text(0.7em)[
+    === 形式化
+    #text(gray)[
+      - *视觉变量*是可单独检查的最小单元
+        - 如：右图 #smallcaps("Crafter") 环境的一个网格单元
+      - 一次感知操作中，*揭示算子*首先剪裁一个视觉变量对应的图像区域，然后通过 VLM 将该区域接地为符号事实
+      // - 如：原本未知的红框，在这里被揭示算子接地成了"石块"这一符号事实
+    ]
     - *符号化想象空间*由*直接揭示事实*和*模式补全事实*组成
       - *直接揭示事实*：由揭示算子直接揭示，需要昂贵的 VLM 调用进行感知
       - *模式补全事实*：通过模式推断进行补全，无需昂贵的 VLM 调用进行感知
@@ -125,15 +166,15 @@
   ]
 ][
   #figure(
-    image("./figure/qualitative_craft_cn.pdf", width: 110%),
-    caption: [#smallcaps("Crafter") 中模式推断与模式归纳过程的定性示意],
+    image("./figure/pipeline_cn_formalization.pdf", width: 100%),
+    // caption: [#smallcaps("Crafter") 中模式推断过程的定性示意],
   )
 ]
 
 == 作为门控混合专家的模式推断
 
-#slide(composer: (1.2fr, 1.38fr))[
-  #text(0.7em)[
+#slide(composer: (1.2fr, 2.0fr))[
+  #text(0.6em)[
     - *符号模式*是一种可组合、可复用且满足条件时激活的规律，可用于预测目标视觉变量的值。
     - 本工作将每个模式视为一个门控专家
       - 门控机制决定*一个（门控）专家是否会在某个视觉变量处激活*
@@ -145,18 +186,14 @@
   ]
 ][
   #figure(
-    image("./figure/qualitative_craft_cn.pdf", width: 110%),
+    image("./figure/pipeline_cn_inference.pdf", width: 110%),
     // caption: [#smallcaps("Crafter") 中模式推断与模式归纳过程的定性示意],
   )
-  // #figure(
-  //   image("./figure/qualitative_frozenlake_cn.pdf", width: 70%),
-  //   // caption: [#smallcaps("Crafter") 中模式推断与模式归纳过程的定性示意],
-  // )
 ]
 
 == 用于构建模式库的在线归纳学习
 
-#slide(composer: (1.2fr, 1.38fr))[
+#slide(composer: (1.2fr, 2.0fr))[
   #text(0.7em)[
     - *归纳学习*：利用具有通用归纳能力的 VLM，对历史样例进行归纳
     - *权重训练*
@@ -165,20 +202,14 @@
   ]
 ][
   #figure(
-    image("./figure/qualitative_craft_cn.pdf", width: 110%),
+    image("./figure/pipeline_cn_induction.pdf", width: 110%),
     // caption: [#smallcaps("Crafter") 中模式推断与模式归纳过程的定性示意],
   )
-  // #figure(
-  //   image("./figure/qualitative_frozenlake_cn.pdf", width: 70%),
-  //   // caption: [#smallcaps("Crafter") 中模式推断与模式归纳过程的定性示意],
-  // )
 ]
 
 = 第四章：实验与结果分析
 
 == 实验设置
-
-
 
 #slide(composer: (1fr, 1fr))[
   === #smallcaps("FrozenLake")
@@ -208,35 +239,56 @@
 
 == 基线、消融实验和指标设置
 
-- 基线
-  - VLM 直接输出：要求 VLM 一次性将渲染图像直接转写为符号化想象空间
-  - 原生"以图思考"：如结合代码解释器的 GPT-5.4, Qwen Agent
-- 消融实验
-  - 无推断：禁用基于模式的补全和重排序。规划器只能使用直接揭示的事实。
-  - 无重加权：禁用模式权重的在线优化。该消融用于测试是否有必要利用回放缓冲区中的历史样例训练权重。
-- 指标
-  - 效率：本工作使用*总 token 消耗*作为效率代理指标，其中包括*感知 token* 和*提议 token*。总 token 和感知 token 在所有回合上取平均，提议 token 在所有提议上取平均。
-  - 准确性：*规划准确率*和*接地准确率*。
+#slide()[
+  #text(0.9em)[
+    #text(gray)[
+      === 基线
+      - VLM 直接输出：要求 VLM 一次性将渲染图像直接转写为符号化想象空间
+      - 原生"以图思考"：如结合代码解释器的 GPT-5.4, Qwen Agent
+      === 消融实验
+      - 无推断：禁用基于模式的补全和重排序。规划器只能使用直接揭示的事实。
+      - 无重加权：禁用模式权重的在线优化。该消融用于测试是否有必要利用回放缓冲区中的历史样例训练权重。
+    ]
+    === 指标
+    - 效率：本工作使用*总 token 消耗*作为效率代理指标，其中包括*感知 token* 和*提议 token*。总 token 和感知 token 在所有回合上取平均，提议 token 在所有提议上取平均。
+    - 准确性：*规划准确率*和*接地准确率*。
+  ]
+]
 
-== 准确率比较
+== 准确率比较 // tbd: 删除红绿色？
 
 #slide(composer: (1.2fr, 1.38fr))[
-  - 直接使用 VLM 输出会导致较差表现，#text(red)[在#smallcaps("CubeBench") 和 #smallcaps("Crafter") 等视觉复杂或规模较大的环境中表现为规划准确率为零]
-  - 原生"以图思考"能够#text(green)[改善部分环境-模型组合的表现]
-    - #text(red)[主要集中在 CubeBench 这类视觉复杂的小规模任务上，无法可靠扩展到 Crafter 这样的大规模环境]
-    - #text(red)[其有效性在不同模型之间并不稳定]
-  - PI-TWI #text(green)[在所有评估任务和模型上都稳定提升了接地准确率和规划准确率]
+
+  #text(0.7em)[
+    === 基线
+    - VLM 直接输出：要求 VLM 一次性将渲染图像直接转写为符号化想象空间
+    - 原生"以图思考"：如结合代码解释器的 GPT-5.4, Qwen Agent
+
+    === 分析
+    - 直接使用 VLM 输出会导致较差表现，#text(red)[在#smallcaps("CubeBench") 和 #smallcaps("Crafter") 等视觉复杂或规模较大的环境中表现为规划准确率为零]
+    - 原生"以图思考"能够#text(green)[改善部分环境-模型组合的表现]
+      - #text(red)[主要集中在 CubeBench 这类视觉复杂的小规模任务上，无法可靠扩展到 Crafter 这样的大规模环境]
+      - #text(red)[其有效性在不同模型之间并不稳定]
+    - PI-TWI #text(green)[在所有评估任务和模型上都稳定提升了接地准确率和规划准确率]
+  ]
 ][
   #include "tables/main-baseline-2.typ"
 ]
 
 == 效率比较
 
+// page1
+
 #slide(composer: (1.2fr, 1.38fr))[
-  *从总 token 消耗来看，PI-TWI 在所有任务中都显著优于其他设置*
 
 
   #text(0.7em)[
+    === 消融实验
+    - 无推断：禁用基于模式的补全和重排序。规划器只能使用直接揭示的事实。
+    - 无重加权：禁用模式权重的在线优化。该消融用于测试是否有必要利用回放缓冲区中的历史样例训练权重。
+
+    *从总 token 消耗来看，PI-TWI 在所有任务中都显著优于其他设置*
+
     具体地：
     // - #smallcaps("FrozenLake")：以不到 10% 的准确率下降为代价，实现了 40.77% 的总 token 消耗降低
     // - #smallcaps("Crafter")：总 token 消耗降低到了"无推断"消融的 63.44%
@@ -245,7 +297,39 @@
     - #smallcaps("CubeBench")：考虑到"仅角块模式补全"的理论下限（4.05k），相较于"无推断"消融，输入 token 从 4.75k 降至 4.45k，达到了最大可能降低幅度的约 42.86%
 
   ]
-  #text(0.55em)[
+  // #text(0.7em)[
+  //   "无重加权"消融的总 token 消耗更高 $=>$
+  //   *权重学习*对效率提升的必要性
+
+  //   PI-TWI 所需的主动揭示次数逐渐下降 $=>$ *在线学习*逐步降低感知成本
+  // ]
+][
+  #include "tables/main-ablation.typ" // tbd: 加上显著红色？
+  // #include "figure/reveal_count_charts/reveal_count_charts.typ"
+]
+
+== 效率比较
+
+// page2
+
+#slide(composer: (1.2fr, 1.38fr))[
+
+  #text(0.5em, gray)[
+    === 消融实验
+    - 无推断：禁用基于模式的补全和重排序。规划器只能使用直接揭示的事实。
+    - 无重加权：禁用模式权重的在线优化。该消融用于测试是否有必要利用回放缓冲区中的历史样例训练权重。
+
+    *从总 token 消耗来看，PI-TWI 在所有任务中都显著优于其他设置*
+
+    具体地：
+    // - #smallcaps("FrozenLake")：以不到 10% 的准确率下降为代价，实现了 40.77% 的总 token 消耗降低
+    // - #smallcaps("Crafter")：总 token 消耗降低到了"无推断"消融的 63.44%
+    - #smallcaps("FrozenLake")：以不到 10% 的准确率下降为代价，相较于"无推断"消融，实现了 40.77% 的总 token 消耗降低
+    - #smallcaps("Crafter")：相较于"无推断"消融，实现了 36.56% 的总 token 消耗降低
+    - #smallcaps("CubeBench")：考虑到"仅角块模式补全"的理论下限（4.05k），相较于"无推断"消融，输入 token 从 4.75k 降至 4.45k，达到了最大可能降低幅度的约 42.86%
+
+  ]
+  #text(0.8em)[
     "无重加权"消融的总 token 消耗更高 $=>$
     *权重学习*对效率提升的必要性
 
