@@ -82,7 +82,7 @@
 ][
   #figure(
     image("figure/twi_teasers/v_star.pdf"),
-    caption: [V\*],
+    caption: [V\*, CVPR'24],
   )
   #figure(
     image("figure/openai_twi_read_sign_teaser.pdf", width: 120%),
