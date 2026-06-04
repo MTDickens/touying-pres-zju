@@ -50,8 +50,9 @@
 // 说visual planning有perceptual bottleneck
 
 #slide(composer: (0.5fr, 1.0fr))[
-  - VLM 在视觉规划任务中，展示出巨大潜力
-  - 当前 VLM 在以原始视觉输入为基础的规划领域仍会遇到困难
+  VLM 在视觉规划任务中，展示出巨大潜力
+  
+  但是，当前 VLM 在以原始视觉输入为基础的规划领域仍会遇到困难
     - 即，尤其是在复杂任务中，VLM 存在严重的视觉感知瓶颈。
 ][
   #figure(
@@ -72,15 +73,21 @@
 #slide(composer: (0.7fr, 1.0fr))[
   针对此问题，*"以图思考"这一新型范式*，一定程度上缓解了上述的视觉感知瓶颈。
 
-  // 同时，以往关于"以图思考"的工作，大部分集中于图像推理任务。少数已经在规划任务上初步论证了有效性，但是。 // fix this
-
   但是，即使当前 VLM 已经接受了较充分的通用"以图思考"能力训练，它们在规划领域中的感知障碍仍然存在。
+
+  #figure(
+    image("figure/crafter-1.png", width: 25%),
+    caption: [#smallcaps("Crafter") 环境, 64x64 格],
+  )
 ][
   #figure(
     image("figure/twi_teasers/v_star.pdf"),
-    caption: [V-Star, CVPR'24],
+    caption: [V\*],
   )
-
+  #figure(
+    image("figure/openai_twi_read_sign_teaser.pdf", width: 120%),
+    caption: [OpenAI, "以图思考"],
+  )
   // tbd: Add OpenAI TWI teaser
 ]
 
@@ -96,7 +103,7 @@
 
     === "以图思考"
 
-    - V-Star, etc: 调用视觉裁剪工具动态获取证据
+    - V\*, etc: 调用视觉裁剪工具动态获取证据
     - ViperGPT, etc: 使用视觉草稿纸
     - MVoT, etc: 直接在视觉模态中模拟未来状态
 
@@ -117,7 +124,7 @@
 
 本工作将上述方法组织为*模式归纳"以图思考"*（Pattern-Induced Thinking with Images, PI-TWI），并在三个视觉规划任务 #smallcaps("FrozenLake")、#smallcaps("Crafter") 和 #smallcaps("CubeBench") 上进行评估。
 
-= 第三章：方法
+= 第二章：方法
 
 // 加上动画（四页 ppt）
 
@@ -207,7 +214,7 @@
   )
 ]
 
-= 第四章：实验与结果分析
+= 第三章：实验与结果分析
 
 == 实验设置
 
@@ -255,7 +262,7 @@
   ]
 ]
 
-== 准确率比较 // tbd: 删除红绿色？
+== 准确率比较
 
 #slide(composer: (1.2fr, 1.38fr))[
 
@@ -265,11 +272,11 @@
     - 原生"以图思考"：如结合代码解释器的 GPT-5.4, Qwen Agent
 
     === 分析
-    - 直接使用 VLM 输出会导致较差表现，#text(red)[在#smallcaps("CubeBench") 和 #smallcaps("Crafter") 等视觉复杂或规模较大的环境中表现为规划准确率为零]
-    - 原生"以图思考"能够#text(green)[改善部分环境-模型组合的表现]
-      - #text(red)[主要集中在 CubeBench 这类视觉复杂的小规模任务上，无法可靠扩展到 Crafter 这样的大规模环境]
-      - #text(red)[其有效性在不同模型之间并不稳定]
-    - PI-TWI #text(green)[在所有评估任务和模型上都稳定提升了接地准确率和规划准确率]
+    - 直接使用 VLM 输出会导致较差表现，在#smallcaps("CubeBench") 和 #smallcaps("Crafter") 等视觉复杂或规模较大的环境中表现为规划准确率为零
+    - 原生"以图思考"能够改善部分环境-模型组合的表现
+      - 主要集中在 CubeBench 这类视觉复杂的小规模任务上，无法可靠扩展到 Crafter 这样的大规模环境
+      - 其有效性在不同模型之间并不稳定
+    - PI-TWI 在所有评估任务和模型上都稳定提升了接地准确率和规划准确率
   ]
 ][
   #include "tables/main-baseline-2.typ"
@@ -304,7 +311,7 @@
   //   PI-TWI 所需的主动揭示次数逐渐下降 $=>$ *在线学习*逐步降低感知成本
   // ]
 ][
-  #include "tables/main-ablation.typ" // tbd: 加上显著红色？
+  #include "tables/main-ablation.typ"
   // #include "figure/reveal_count_charts/reveal_count_charts.typ"
 ]
 
@@ -330,9 +337,10 @@
 
   ]
   #text(0.8em)[
-    "无重加权"消融的总 token 消耗更高 $=>$
-    *权重学习*对效率提升的必要性
-
+    "无推断"消融的总 token 消耗更高 $=>$ *模式推断*的有效性
+    
+    "无重加权"消融的总 token 消耗更高 $=>$*权重学习*对效率提升的必要性
+    
     PI-TWI 所需的主动揭示次数逐渐下降 $=>$ *在线学习*逐步降低感知成本
   ]
 ][
@@ -346,7 +354,7 @@
 - 本工作希望测试：在较小地图上完成训练后，模式及其权重能否零样本泛化到更大的地图。这意味着不仅模式固定，权重也固定，并且不会在更大地图上进行任何训练。
 - 具体地：本工作将 Crafter 在 64x64 地图上学习到的模式和权重测试到更大的 128x128 地图上。结果表明，相比无推断消融，主动揭示次数从 2349.63 下降到 1570.45，说明模式及其权重*具有一定的分布外泛化能力*。
 
-= 第五章：结论与展望
+= 第四章：结论与展望
 
 == 总结
 
